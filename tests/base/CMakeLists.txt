@@ -1,11 +1,10 @@
 cmake_minimum_required(VERSION 3.2)
 project(yas-base-test CXX)
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
 
 add_definitions(
     -UNDEBUG
-    -DYAS_OBJECT_MAX_MEMBERS=50
 )
 
 # YAS_NO_EXCEPTIONS

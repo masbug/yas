@@ -59,10 +59,6 @@
 
 /***************************************************************************/
 
-#ifndef YAS_OBJECT_MAX_MEMBERS
-#   define YAS_OBJECT_MAX_MEMBERS 20
-#endif // YAS_OBJECT_MAX_MEMBERS
-
 #ifndef YAS_VARIANT_MAX_VARIANTS
 #   define YAS_VARIANT_MAX_VARIANTS 20
 #endif // YAS_VARIANT_MAX_VARIANTS

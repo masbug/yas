@@ -38,51 +38,28 @@
 
 #include <yas/detail/config/config.hpp>
 #include <yas/detail/type_traits/type_traits.hpp>
-#include <yas/detail/preprocessor/preprocessor.hpp>
+#include <utility>
 
 namespace yas {
 namespace detail {
 
 /***************************************************************************/
 
+template<typename Archive, typename ...Ts, std::size_t ...Is>
+void tuple_switch_impl(Archive &ar, std::size_t idx, std::tuple<Ts...>& t, std::index_sequence<Is...>)
+{
+    ((void)(Is == idx && (ar & std::get<Is>(t), true)), ...);
+}
+
 template<typename Archive>
 void tuple_switch(Archive &, std::size_t, std::tuple<> &) {}
 
-#define __YAS_GENERATE_TUPLE_SWITCH_CB(unused0, idx, unused1) \
-    case idx: { ar & std::get<idx>(t); return; };
+template<typename Archive, typename ...Ts>
+void tuple_switch(Archive &ar, std::size_t idx, std::tuple<Ts...>& t)
+{
+    tuple_switch_impl(ar, idx, t, std::make_index_sequence<sizeof...(Ts)>{});
+}
 
-#define __YAS_GENERATE_TUPLE_SWITCH_FOR_ZERO(n)
-
-#define __YAS_GENERATE_TUPLE_SWITCH_FOR_NONZERO(n) \
-    template<typename Archive, YAS_PP_ENUM_PARAMS(n, typename T)> \
-    void tuple_switch(Archive &ar, std::size_t idx, std::tuple<YAS_PP_ENUM_PARAMS(n, T)> &t) { \
-        switch ( idx ) { \
-            YAS_PP_REPEAT( \
-                 n \
-                ,__YAS_GENERATE_TUPLE_SWITCH_CB \
-                ,~ \
-            ) \
-            default: return; \
-        } \
-    }
-
-#define __YAS_GENERATE_TUPLE_SWITCH(unused, n, unused2) \
-    YAS_PP_IF( \
-         YAS_PP_EQUAL(n, 0) \
-        ,__YAS_GENERATE_TUPLE_SWITCH_FOR_ZERO \
-        ,__YAS_GENERATE_TUPLE_SWITCH_FOR_NONZERO \
-    )(n)
-
-YAS_PP_REPEAT( \
-     YAS_OBJECT_MAX_MEMBERS \
-    ,__YAS_GENERATE_TUPLE_SWITCH \
-    ,~ \
-)
-
-#undef __YAS_GENERATE_TUPLE_SWITCH_CB
-#undef __YAS_GENERATE_TUPLE_SWITCH
-#undef __YAS_GENERATE_TUPLE_SWITCH_FOR_ZERO
-#undef __YAS_GENERATE_TUPLE_SWITCH_FOR_NONZERO
 
 /***************************************************************************/
 
