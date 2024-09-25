@@ -42,6 +42,9 @@
 
 #include <QtCore/QVector>
 
+#if QT_CORE_REMOVED_SINCE(6, 0)
+// QList and QVector are now the same
+
 namespace yas {
 namespace detail {
 
@@ -69,5 +72,6 @@ struct serializer<
 
 } // namespace detail
 } // namespace yas
+#endif
 
 #endif // __yas__types__qt__qvector_serializers_hpp
