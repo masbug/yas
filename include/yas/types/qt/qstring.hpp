@@ -58,15 +58,16 @@ struct serializer<
 > {
     template<typename Archive>
     static Archive& save(Archive& ar, const QString &str) {
-        return ar & str.toUtf8();
+        const QByteArray &arr = str.toUtf8();
+        return ar & std::string_view(arr.constData(), arr.length());
     }
 
     template<typename Archive>
     static Archive& load(Archive& ar, QString &str) {
-        QByteArray arr;
-        ar & arr;
+        std::string s;
+        ar & s;
 
-        str = QString::fromUtf8(arr);
+        str = QString::fromStdString(s);
 
         return ar;
     }
