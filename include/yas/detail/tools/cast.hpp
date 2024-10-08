@@ -40,4 +40,14 @@
 #define __YAS_RCAST(t, v) reinterpret_cast<t>(v)
 #define __YAS_CCAST(t, v) const_cast<t>(v)
 
+namespace yas::detail_cast
+{
+template<class T>
+struct no_implicit_conversion {
+    const T &ref;
+    no_implicit_conversion(const T &ref) : ref(ref) {}
+    operator const T &() const { return ref; }
+};
+} // namespace yas::detail_cast
+
 #endif // __yas__detail__tools__cast_hpp
